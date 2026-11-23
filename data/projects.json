@@ -9,10 +9,14 @@
     "published": true
   },
   {
-    "title": "Event & Documentary",
-    "category": "Event / Documentary",
+    "title": "WEDDING",
+    "category": "웨딩 메인감독",
+    "year": "2025",
+    "role": "웨딩 비디오촬영감독",
+    "video_url": "https://www.youtube.com/watch?v=N7uwhr2F5bw",
+    "thumbnail": "/media/AA.jpg",
     "featured": false,
-    "published": false
+    "published": true
   },
   {
     "title": "Brand & Commercial",
