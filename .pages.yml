@@ -1,0 +1,62 @@
+media: media
+content:
+  - name: projects
+    label: 영상 작품 관리
+    type: file
+    path: data/projects.json
+    format: json
+    list: true
+    fields:
+      - name: title
+        label: 작품 제목
+        type: string
+        required: true
+      - name: category
+        label: 카테고리
+        type: string
+      - name: year
+        label: 제작 연도
+        type: string
+      - name: role
+        label: 담당 역할
+        type: string
+      - name: description
+        label: 작품 설명
+        type: text
+      - name: video_url
+        label: YouTube 또는 Vimeo 영상 주소
+        type: string
+        description: 영상 전체 URL을 입력하세요. 파일 업로드가 아닙니다.
+      - name: thumbnail
+        label: 썸네일 이미지
+        type: image
+      - name: featured
+        label: 대표 작품
+        type: boolean
+      - name: published
+        label: 사이트에 공개
+        type: boolean
+  - name: profile
+    label: 자기소개 및 연락처
+    type: file
+    path: data/profile.json
+    format: json
+    fields:
+      - name: name
+        label: 이름
+        type: string
+      - name: subtitle
+        label: 역할명
+        type: string
+      - name: intro
+        label: 메인 소개
+        type: text
+      - name: about
+        label: 상세 자기소개
+        type: text
+      - name: email
+        label: 연락 이메일
+        type: string
+      - name: resume_url
+        label: 이력서 URL (선택)
+        type: string
