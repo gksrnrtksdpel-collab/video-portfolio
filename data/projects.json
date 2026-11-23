@@ -3,6 +3,7 @@
     "title": "portfolio test",
     "category": "Wedding / Cinematic",
     "video_url": "https://www.youtube.com/watch?v=04bvImnr49E",
+    "thumbnail": "/media/dd.jpg",
     "featured": false,
     "published": true
   },
