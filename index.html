@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0b0b">
+<meta name="description" content="Video portfolio — selected films and contact">
+<title>송태민 | Video Portfolio</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#0b0b0b;color:#f5f5f5;font-family:Arial,"Noto Sans KR",sans-serif}
+nav{display:flex;justify-content:space-between;align-items:center;padding:24px 7%;border-bottom:1px solid #292929}nav span,.label{font-size:12px;letter-spacing:3px;color:#999}
+.hero{padding:clamp(75px,12vw,140px) 7% 90px}h1{font-size:clamp(48px,9vw,110px);line-height:.98;letter-spacing:-.055em;margin:25px 0}h1 span{color:#777}
+.intro{color:#aaa;line-height:1.9;font-size:15px;white-space:pre-line}section{padding:65px 7%}.section-title{font-size:26px;margin:0 0 35px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.project{display:block}.project-button{display:block;width:100%;padding:0;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;font:inherit}.project-button:focus-visible,.close:focus-visible,.contact-link:focus-visible{outline:2px solid white;outline-offset:5px}
+.thumb{position:relative;aspect-ratio:16/9;background:#202020;display:flex;align-items:center;justify-content:center;color:#777;font-size:12px;letter-spacing:2px;overflow:hidden}.thumb img{width:100%;height:100%;object-fit:cover}.thumb::after{content:'▶';position:absolute;inset:auto auto 16px 16px;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#050505b8;color:#fff;font-size:12px;letter-spacing:0}.thumb.blank::after{display:none}.project h3{font-size:17px;margin:16px 0 7px}.project p{font-size:13px;color:#888;margin:0;line-height:1.6}.project-button:hover .thumb img{transform:scale(1.025)}.thumb img{transition:transform .25s}.top-mark{display:inline-block;margin:0 0 10px;color:#aaa;font-size:10px;letter-spacing:2px}
+.about{border-top:1px solid #292929;border-bottom:1px solid #292929}.about p{max-width:650px;color:#aaa;line-height:2;font-size:15px;white-space:pre-line}.contact{padding-bottom:100px}.contact-link{color:#eee;text-decoration:underline;text-underline-offset:4px}.contact-link:hover{color:white}footer{padding:25px 7%;color:#666;font-size:11px;border-top:1px solid #292929}
+.empty{font-size:14px;color:#888;line-height:1.8;grid-column:1/-1}
+.dialog{border:1px solid #353535;background:#101010;color:#f5f5f5;width:min(940px,calc(100% - 28px));max-height:90vh;padding:0;border-radius:6px}.dialog::backdrop{background:rgba(0,0,0,.88)}.dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 24px}.dialog-head h2{font-size:22px;margin:0 0 7px}.dialog-head p{font-size:13px;color:#aaa;margin:0}.close{border:0;background:#292929;color:white;cursor:pointer;font-size:22px;width:36px;height:36px;border-radius:3px}.player{aspect-ratio:16/9;background:#000}.player iframe{width:100%;height:100%;border:0}.detail{padding:20px 24px 28px;color:#aaa;font-size:14px;white-space:pre-line;line-height:1.8}.detail:empty{display:none}
+@media(max-width:600px){.hero{padding:80px 7%}.grid{grid-template-columns:1fr}section{padding-top:45px;padding-bottom:45px}.dialog-head{padding:15px}.detail{padding:14px}}
+</style>
+</head>
+<body>
+<nav><strong id="brand-name">송태민</strong><span id="brand-role">VIDEOGRAPHER</span></nav>
+<header class="hero"><div class="label">VIDEO PRODUCTION / PORTFOLIO</div><h1>STORIES<br><span>IN MOTION.</span></h1><p class="intro" id="intro">순간을 기록하고, 감정을 담아내는 영상.</p></header>
+<section id="works"><h2 class="section-title">Selected Works</h2><div class="grid" id="projects"><p class="empty">작품 목록을 불러오는 중입니다.</p></div></section>
+<section class="about"><h2 class="section-title">About Me</h2><p id="about-text"></p></section>
+<section class="contact"><h2 class="section-title">Let's Work Together.</h2><p class="intro" id="contact-text">촬영 문의 및 협업 제안은 추후 연락처를 추가할 예정입니다.</p><p id="resume-holder"></p></section>
+<footer>© <span id="copyright-year">2026</span> <span id="footer-name">송태민</span>. ALL RIGHTS RESERVED.</footer>
+<dialog class="dialog" id="video-dialog" aria-label="작품 재생"><div class="dialog-head"><div><h2 id="modal-title"></h2><p id="modal-meta"></p></div><button class="close" id="modal-close" aria-label="닫기">×</button></div><div class="player" id="player"></div><div class="detail" id="modal-description"></div></dialog>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+function videoInfo(url){
+  if(!url || typeof url !== 'string') return null;
+  let u;try{u = new URL(url.trim());}catch{return null;}
+  if(!['https:','http:'].includes(u.protocol))return null;
+  const host=u.hostname.toLowerCase().replace(/^www\./,'');
+  if(host==='youtu.be' || host==='youtube.com' || host==='m.youtube.com' || host==='youtube-nocookie.com'){
+    let id=host==='youtu.be'?u.pathname.split('/')[1]:u.searchParams.get('v');
+    if(!id && /^\/(shorts|embed|live)\//.test(u.pathname))id=u.pathname.split('/')[2];
+    return id && /^[\w-]{11}$/.test(id)?{embed:`https://www.youtube-nocookie.com/embed/${id}?rel=0`,thumbnail:`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}:null;
+  }
+  if(host==='vimeo.com'||host==='player.vimeo.com'){
+    const parts=u.pathname.split('/').filter(Boolean);const id=parts.find(p=>/^\d+$/.test(p));
+    if(!id)return null;
+    const h=u.searchParams.get('h') || ((parts.indexOf(id)>=0 && /^[a-f0-9]{6,}$/.test(parts[parts.indexOf(id)+1]||''))?parts[parts.indexOf(id)+1]:'');
+    return {embed:`https://player.vimeo.com/video/${id}${h?'?h='+encodeURIComponent(h):''}`,thumbnail:''};
+  }
+  return null;
+}
+const dialog=$('video-dialog');
+function closePlayer(){ $('player').replaceChildren();if(dialog.open)dialog.close();}
+$('modal-close').addEventListener('click',closePlayer);
+dialog.addEventListener('click',e=>{if(e.target===dialog)closePlayer();});
+dialog.addEventListener('close',()=>{$('player').replaceChildren();});
+function showProject(item, video){
+  $('modal-title').textContent=item.title || '영상 작품';
+  $('modal-meta').textContent=[item.category,item.year,item.role].filter(Boolean).join(' · ');
+  $('modal-description').textContent=item.description || '';
+  const frame=document.createElement('iframe');frame.src=video.embed;frame.title=item.title||'영상 재생';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';
+  $('player').replaceChildren(frame);
+  if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
+}
+function showProjects(items){
+  const grid=$('projects');grid.replaceChildren();
+  const published=items.filter(p=>p && p.published===true && videoInfo(p.video_url));
+  published.sort((a,b)=>Number(Boolean(b.featured))-Number(Boolean(a.featured)));
+  if(!published.length){const p=document.createElement('p');p.className='empty';p.textContent='공개된 작품이 아직 없습니다. 작품이 등록되면 이곳에 표시됩니다.';grid.append(p);return;}
+  for(const item of published){
+    const video=videoInfo(item.video_url);
+    const article=document.createElement('article');article.className='project';
+    const btn=document.createElement('button');btn.type='button';btn.className='project-button';btn.setAttribute('aria-label',`${item.title} 영상 재생`);
+    if(item.featured){const mark=document.createElement('span');mark.className='top-mark';mark.textContent='FEATURED WORK';btn.append(mark);}
+    const thumb=document.createElement('div');thumb.className='thumb';
+    let imgSrc=(typeof item.thumbnail==='string'&&item.thumbnail.trim())||video.thumbnail;
+    if(imgSrc){const img=document.createElement('img');img.src=imgSrc;img.alt=`${item.title} 썸네일`;img.loading='lazy';img.onerror=()=>{img.remove();thumb.append(document.createTextNode('VIDEO'));};thumb.append(img);}else{thumb.append(document.createTextNode('VIDEO'));}
+    const name=document.createElement('h3');name.textContent=item.title||'Untitled';
+    const meta=document.createElement('p');meta.textContent=[item.category,item.year,item.role].filter(Boolean).join(' / ');
+    btn.append(thumb,name,meta);btn.addEventListener('click',()=>showProject(item,video));article.append(btn);grid.append(article);
+  }
+}
+async function init(){
+  try{
+    const [pr,pf]=await Promise.all([fetch('./data/projects.json',{cache:'no-cache'}),fetch('./data/profile.json',{cache:'no-cache'})]);
+    if(!pr.ok||!pf.ok)throw new Error('data files not found');
+    const [projects,profile]=await Promise.all([pr.json(),pf.json()]);
+    if(!Array.isArray(projects))throw new Error('Invalid projects');
+    showProjects(projects);
+    $('brand-name').textContent=profile.name||'VIDEO PORTFOLIO';$('footer-name').textContent=profile.name||'VIDEO PORTFOLIO';
+    $('brand-role').textContent=profile.subtitle||'VIDEOGRAPHER';$('intro').textContent=profile.intro||'';$('about-text').textContent=profile.about||'';
+    $('copyright-year').textContent=String(new Date().getFullYear());
+    const contact=$('contact-text');contact.replaceChildren();
+    if(profile.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.email)){
+      const a=document.createElement('a');a.href='mailto:'+profile.email;a.className='contact-link';a.textContent=profile.email;contact.append('문의 및 협업 제안: ',a);
+    }else contact.textContent='촬영 문의 및 협업 제안은 추후 연락처를 추가할 예정입니다.';
+    if(profile.resume_url){try{const u=new URL(profile.resume_url);if(['https:','http:'].includes(u.protocol)){const a=document.createElement('a');a.href=u.href;a.target='_blank';a.rel='noopener noreferrer';a.className='contact-link';a.textContent='이력서 보기';$('resume-holder').append(a);}}catch{}}
+  }catch(e){$('projects').textContent='작품 정보를 읽지 못했습니다. 파일을 인터넷 서버에 게시한 뒤 확인해 주세요.';console.error(e);}
+}
+init();
+</script>
+</body>
+</html>
