@@ -35,5 +35,14 @@
     "video_url": "https://www.youtube.com/watch?v=d3wgKF2hWbs",
     "featured": true,
     "published": true
+  },
+  {
+    "title": " [PLM DX 베스트 프랙티스 컨퍼런스 2025] 하이라이트 영상",
+    "category": "컨퍼런스",
+    "year": "2025",
+    "role": "촬영 메인감독및편집",
+    "video_url": "https://www.youtube.com/watch?v=xqpaiN7-2sY",
+    "featured": false,
+    "published": true
   }
 ]
